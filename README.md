@@ -1,1 +1,1 @@
-# ks-g21
+# Java Script g21
