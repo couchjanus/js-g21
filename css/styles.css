@@ -380,9 +380,10 @@ nav {
     background-color: transparent;
     text-align: center;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 1em;
     font-weight: 400;
     line-height: 1.5;
+    cursor: pointer;
 }
 
 .btn:hover {
@@ -394,6 +395,8 @@ nav {
     color: #fff;
     background-color: #111111;
     border-color: #343a40;
+    border-radius: 5px;
+    padding: 0.2em 0.4em;
 }
 
 .btn-dark:hover {
@@ -1514,7 +1517,7 @@ nav {
     
 }
 
-.show-sidebar {
+.show {
     transform: translate(0);
 }
 
@@ -1580,4 +1583,280 @@ nav {
   
   .inc-dec-btn, .amount{
   padding: 0.5rem 1rem;
+  }
+
+
+/* Product Detail */
+.single{
+    position: fixed;
+    top: 70px;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: white;
+    transition: all 0.3s linear;
+    transform: translateX(-200%);
+    z-index: 10;
+}
+.show-single{
+    transform: translateX(0%);
+}
+
+.detail{
+    width: 0%;
+    margin: 1rem auto;
+    height: 70%;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    background: #f6f6f6;
+    position: relative;
+    animation: openBox 4s cubic-bezier(0.74, 0.06, 0.4, 0.92) forwards;
+    transition: all 0.3s linear 1s;
+}
+
+.a {
+    grid-column: 1 / 3;
+    grid-row: 1;
+}
+
+.b {
+    grid-column: 3 ;
+    grid-row: 1;
+}
+
+.c {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.d {
+    grid-column: 2 / 4;
+    grid-row: 2;
+}
+
+@keyframes openBox {
+    0% {
+      width: 0px;
+    }
+    100% {
+      width: 70%;
+    }
+}
+@keyframes fadeImg {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes upProduct {
+    0% {
+      opacity: 0;
+      bottom: -20px;
+    }
+    100% {
+      opacity: 1;
+      bottom: 0px;
+    }
+  }
+  @keyframes showDisc {
+    0% {
+      width: 0px;
+      left: 40%;
+    }
+    100% {
+      width: 50%;
+      left: 40%;
+    }
+  }
+  @keyframes fadeContent {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @keyframes fadeWish {
+    0% {
+      opacity: 0;
+      bottom: -25px;
+    }
+    100% {
+      opacity: 1;
+      bottom: 0;
+    }
+  }
+  @keyframes fadeBuy {
+    0% {
+      opacity: 0;
+      bottom: -25px;
+    }
+    100% {
+      opacity: 1;
+      bottom: 0;
+    }
+  }
+
+.detail .product__img {
+    width: 50%;
+    position: absolute;
+    left: -150px;
+    top: 50px;
+    opacity: 0;
+    animation: fadeImg 1s ease-in-out forwards;
+    animation-delay: 1s;
+  }
+  .detail .product__img img{
+      max-width: 100%;
+  }
+
+  .detail .all-product {
+    width: 30%;
+    height: 100px;
+    position: absolute;
+    left: 50px;
+    bottom: 50px;
+  }
+  .detail .all-product .go-back {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 0px;
+    opacity: 0;
+    animation: upProduct 1s cubic-bezier(0.74, 0.06, 0.4, 0.92) forwards;
+    animation-delay: 1.2s;
+  }
+  .detail  .all-product .go-back i {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: #F71568;
+    border: 2px solid #F71568;
+    border-radius: 50%;
+    transition: ease-in-out 220ms;
+    cursor: pointer;
+  }
+  .detail  .all-product .go-back i:hover {
+    background: #F71568;
+    color: #fff;
+  }
+  .detail  .all-product .go-back p {
+    margin-left: 25px;
+  }
+  .detail .product__description {
+    width: 0px;
+    height: 50%;
+    background: #FFCA1B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: 0px;
+    top: 50px;
+    animation: showDisc 1s cubic-bezier(0.74, 0.06, 0.4, 0.92) forwards;
+  }
+  .detail .product__description--content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    animation: fadeContent 1s ease-in-out forwards;
+    animation-delay: 1s;
+    opacity: 0;
+    padding: 1em 2em;
+  }
+  .detail .description__content--about {
+    width: 100%;
+  }
+  .detail .description__content--about h1 {
+    font-size: 2.2rem;
+  }
+  .detail .description__content--about span {
+    font-size: 1rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    opacity: 0.5;
+  }
+  .detail .description__content--about p {
+    margin-top: 2.3rem;
+    font-size: 1rem;
+  }
+  .detail .product__view--more {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    margin-left: 2rem;
+  }
+  .detail .product__view--more:hover .view__more--block {
+    width: 220px;
+    height: 35px;
+  }
+  .detail .product__view--more .view__more--block {
+    width: 10px;
+    height: 15px;
+    position: absolute;
+    background: #f6f6f6;
+    z-index: 1;
+    transition: cubic-bezier(0.68, -0.55, 0.27, 1.55) 320ms;
+  }
+  .detail .product__view--more p {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    z-index: 2;
+    margin-left: 15px;
+  }
+  .detail .product_buttons {
+    width: 30%;
+    height: 100px;
+    bottom: 50px;
+    right: 0px;
+    position: absolute;
+  }
+  .detail .product_buttons .btn {
+    width: 240px;
+    height: 70%;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: ease-in-out 220ms;
+    cursor: pointer;
+  }
+  .detail .product_buttons .wishlist {
+    border: 2px solid #F71568;
+    background: transparent;
+    color: #F71568;
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    opacity: 0;
+    animation: fadeWish 1s cubic-bezier(0.74, 0.06, 0.4, 0.92) forwards;
+    animation-delay: 1s;
+  }
+  .detail .product_buttons .wishlist:hover {
+    background: #F71568;
+    color: #FFF;
+  }
+  .detail .product_buttons .buy {
+    border: none;
+    background: #F71568;
+    color: #FFF;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    animation: fadeBuy 1s cubic-bezier(0.74, 0.06, 0.4, 0.92) forwards;
+    animation-delay: 1s;
   }
