@@ -65,3 +65,36 @@ const products = [
     },
 ];
 
+const categories = [
+    {
+        id:1,
+        image:"images/product-1.jpg",
+        name:"electronics",
+    },
+    {
+        id:2,
+        image:"images/product-2.jpg",
+        name:"bags",
+    },
+    {
+        id:3,
+        image:"images/product-3.jpg",
+        name:"clothes",
+
+    },
+    {
+        id:4,
+        image:"images/product-4.jpg",
+        name:"watches",
+    },
+    {
+        id:5,
+        image:"images/product-6.jpg",
+        name:"shoes",
+    },
+    {
+        id:6,
+        image:"images/product-7.jpg",
+        name:"cosmetics",
+    },
+];
