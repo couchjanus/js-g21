@@ -10,7 +10,7 @@ function toggleCart() {
     if(single.classList.contains('show-single')){
         single.classList.remove('show-single');
     }
-    // populateCart(cart);
+    
     aside.classList.toggle("show");
     if(aside.classList.contains('show')){
         cartItems.innerHTML = '';
@@ -114,7 +114,8 @@ const getProduct = function(id){
         return product.id === +(id);
     });
 };
-const cart = [];
+
+let cart = [];
 
 function addToCartItem(item){
     const div = document.createElement("div");
@@ -133,13 +134,13 @@ function addToCartItem(item){
             <div class="quantity">
                 <div class="border d-flex justify-content-around mx-auto">
                     <i class="fas fa-caret-left inc-dec-btn" data-id=${item.id}></i>
-                    <span class="border-1 p-1 amount">1</span>
+                    <span class="border-1 p-1 amount">${item.amount}</span>
                     <i class="fas fa-caret-right inc-dec-btn" data-id=${item.id}></i>
                 </div>
             </div>
             <div class="prices">
                 <span class="price">$<span class="product-price">${item.price}</span></span>
-                <span class="subtotal">Total: $<span class="product-subtotal"></span></span>
+                <span class="subtotal">Total: $<span class="product-subtotal">${item.amount*item.price}</span></span>
             </div>
         `;
         cartItems.appendChild(div);
@@ -147,13 +148,42 @@ function addToCartItem(item){
 function populateCart(cart) {
     cart.forEach(function(item){addToCartItem(item);});
 }
-document.addEventListener("DOMContentLoaded", function(){
-    let style = getComputedStyle(document.body)
-    console.log( style.getPropertyValue('--categories-length') ) 
-    document.body.style.setProperty( "--categories-length", categories.length );
-    console.log( style.getPropertyValue('--categories-length') ) 
-    
 
+function clear() {
+    cart = [];
+    cartItems.innerHTML = '';
+}
+
+filterItem = (cart, curentItem) => cart.filter(item => item.id !== +(curentItem.dataset.id));
+    
+findItem = (cart, curentItem) => cart.find(item => item.id === +(curentItem.dataset.id));
+
+function renderCart() {
+    clearCart.addEventListener("click", () => clear());
+    cartItems.addEventListener("click", event => {
+        // event.preventDefault();
+        if (event.target.classList.contains("fa-trash-alt")){
+            cart = filterItem(cart, event.target);
+            event.target.closest('.cart-item').remove();
+        } else if (event.target.classList.contains("fa-caret-right")) {
+            let tempItem = findItem(cart, event.target);
+            tempItem.amount = tempItem.amount + 1;
+            event.target.previousElementSibling.innerText = tempItem.amount;
+        } else if (event.target.classList.contains("fa-caret-left")) {
+            let tempItem = findItem(cart, event.target);
+            if (tempItem !== undefined && tempItem.amount > 1) {
+                tempItem.amount = tempItem.amount - 1;
+                event.target.nextElementSibling.innerText = tempItem.amount;
+            } else {
+                cart = filterItem(cart, event.target);
+                event.target.closest('.cart-item').remove();
+            }
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+    document.body.style.setProperty( "--categories-length", categories.length );
     closeBtn.addEventListener("click", closeCart);
     sidebarToggle.addEventListener("click", toggleCart);
     makeCarousel(categories);
@@ -164,16 +194,22 @@ document.addEventListener("DOMContentLoaded", function(){
 
     addToCarts.forEach(function(item) {
         item.addEventListener("click", function(event) {
-        // let id = event.target.closest('.product').getAttribute('data-id');
-        // console.log(id);
-        // let product = getProduct(event.target.closest('.product').getAttribute('data-id'));
-        // let product = getProduct(id);
-        // dataset
-        let product = getProduct(event.target.closest('.product').dataset.id);
-        console.log(product);
-        cart.push(product);
-        console.log(cart);
+            let product = getProduct(event.target.closest('.product').dataset.id);
+
+            let exist = cart.some(elem => elem.id === product.id);
+            if(exist){
+                cart.forEach(elem => {
+                    if(elem.id === product.id){
+                        elem.amount += 1;
+                    }
+                })
+            }else {
+                let cartItem = { ...product, amount: 1 };
+                cart = [...cart, cartItem];
+
+            }
+            // console.log(cart);
         });
     });
-
+    renderCart();
 });
