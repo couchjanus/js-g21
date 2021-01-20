@@ -6,24 +6,31 @@ const single = document.querySelector(".single");
 const goBack = document.querySelector('.go-back');
 const cartItems = document.querySelector('.cart-items');
 
-function toggleCart() {
-    if(single.classList.contains('show-single')){
-        single.classList.remove('show-single');
-    }
+// function toggleCart() {
+//     if(single.classList.contains('show-single')){
+//         single.classList.remove('show-single');
+//     }
     
+//     aside.classList.toggle("show");
+//     if(aside.classList.contains('show')){
+//         cartItems.innerHTML = '';
+//         populateCart(cart);
+//     }
+// }
+
+const toggleCart = () => {
+    single.classList.contains('show-single') && single.classList.remove('show-single');
     aside.classList.toggle("show");
-    if(aside.classList.contains('show')){
-        cartItems.innerHTML = '';
-        populateCart(cart);
-    }
+    aside.classList.contains('show') && populateCart(cart);
 }
 
-function closeCart() {
-    aside.classList.remove("show");
-}
+// function closeCart() {
+//     aside.classList.remove("show");
+// }
 
-function createProduct(data){
-    return `
+const closeCart = () =>  aside.classList.remove("show");
+
+const createProduct = (data) => `
     <div class="col-xl-3 col-lg-4 col-sm-6">
         <div class="product text-center" data-id="${data.id}">
             <div class="position-relative mb-3">
@@ -43,8 +50,7 @@ function createProduct(data){
             <p class="text-small text-muted">$<span class="product-price">${data.price}</span></p>
         </div>
     </div>
-    `;
-}
+`;
         
 function makeShowcase(products) {
     let result = '';
@@ -65,39 +71,25 @@ function renderShowcase(){
     
     productDetails.forEach(function(element) {
         element.addEventListener("click", function(e){
-    
-            let parent = e.target.closest(".product")
-    
-            // description__content--about
-            
-            let price = parent.querySelector('.product-price').innerText;
-            let name = parent.querySelector('.product-name').innerText;
-            let about = `
-            <h1>${name}</h1>
-                <h2>$${price}</h2>
-                <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam. Accusantium aspernatur ducimus impedit perferendis quisquam repellendus similique ullam vitae!</div>
-            `;
+            let product = getProduct(e.target.closest('.product').dataset.id);
             let contentAbout = document.querySelector('.description__content--about');
-            contentAbout.innerHTML = about;
-    
-            // product__img
-            let image = parent.querySelector('.product-img').getAttribute('src');
-            document.querySelector('.product__img').innerHTML = `<img src="${image}" alt="">`;
+            contentAbout.innerHTML = `
+            <h1>${product.name}</h1>
+                <h2>$${product.price}</h2>
+                <div>${product.description}</div>
+            `;
+            document.querySelector('.product__img').innerHTML = `<img src="${product.image}" alt="">`;
             single.classList.add("show-single");
         });
     });
-    
 }
 
-function carouselItem(data){
-    return `
+const carouselItem = (data) =>`
     <div class="carousel-item">
         <a class="category-item" href="shop.html">
             <img src="${data.image}" alt="${data.name}" height="100" width="250"><strong
             class="category-item-title">${data.name}</strong></a>
-    </div>
-    `;
-}
+    </div>`;
 
 function makeCarousel(categories) {
     let result = '';
@@ -109,11 +101,14 @@ function makeCarousel(categories) {
 }
 // 
 
-const getProduct = function(id){
-    return products.find(function(product){
-        return product.id === +(id);
-    });
-};
+// const getProduct = function(id){
+//     return products.find(function(product){
+//         return product.id === +(id);
+//     });
+// };
+
+const getProduct = (id) => products.find((product) => product.id === +(id));
+
 
 let cart = [];
 
@@ -145,18 +140,25 @@ function addToCartItem(item){
         `;
         cartItems.appendChild(div);
 }
+
 function populateCart(cart) {
+    cartItems.innerHTML = '';
     cart.forEach(function(item){addToCartItem(item);});
 }
 
-function clear() {
+// function clear() {
+//     cart = [];
+//     cartItems.innerHTML = '';
+// }
+
+const clear = () => {
     cart = [];
     cartItems.innerHTML = '';
 }
 
-filterItem = (cart, curentItem) => cart.filter(item => item.id !== +(curentItem.dataset.id));
+const filterItem = (cart, curentItem) => cart.filter(item => item.id !== +(curentItem.dataset.id));
     
-findItem = (cart, curentItem) => cart.find(item => item.id === +(curentItem.dataset.id));
+const findItem = (cart, curentItem) => cart.find(item => item.id === +(curentItem.dataset.id));
 
 function renderCart() {
     clearCart.addEventListener("click", () => clear());
@@ -208,7 +210,6 @@ document.addEventListener("DOMContentLoaded", function(){
                 cart = [...cart, cartItem];
 
             }
-            // console.log(cart);
         });
     });
     renderCart();
