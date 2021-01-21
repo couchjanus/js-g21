@@ -3,30 +3,17 @@ const sidebarToggle = document.querySelector(".sidebar-toggle");
 const closeBtn = document.querySelector(".close-btn");
 const clearCart = document.querySelector(".clear-cart");
 const single = document.querySelector(".single");
-const goBack = document.querySelector('.go-back');
+
 const cartItems = document.querySelector('.cart-items');
 
-// function toggleCart() {
-//     if(single.classList.contains('show-single')){
-//         single.classList.remove('show-single');
-//     }
-    
-//     aside.classList.toggle("show");
-//     if(aside.classList.contains('show')){
-//         cartItems.innerHTML = '';
-//         populateCart(cart);
-//     }
-// }
+const cartTotal = document.querySelector(".cart-total");
+const countItemsInCart = document.querySelector('.count-items-in-cart');
 
 const toggleCart = () => {
     single.classList.contains('show-single') && single.classList.remove('show-single');
     aside.classList.toggle("show");
     aside.classList.contains('show') && populateCart(cart);
 }
-
-// function closeCart() {
-//     aside.classList.remove("show");
-// }
 
 const closeCart = () =>  aside.classList.remove("show");
 
@@ -60,28 +47,65 @@ function makeShowcase(products) {
     document.querySelector('.showcase').innerHTML = result;
 }
 
+const createDetail = (data) => 
+`<div class="detail product" data-id="${data.id}">
+    <div class="product__img">
+        <img src="${data.image}" alt="${data.name}">
+    </div>
+    <div class="product__description--content">
+        <div class="description__content--about">
+            <h1>${data.name}</h1>
+            <h2>$${data.price}</h2>
+            <div>${data.description}</div>
+        </div>
+    </div>
+    <div class="go-back">
+        <i class="fas fa-play"></i>
+        <span>All products</span>
+    </div>
+    <div class="product_buttons">
+        <button class="btn wishlist">wishlist</button>
+        <button class="btn buy add-to-cart">Add to cart</button>
+    </div>
+</div>`;
+
+const addItem = (product) => {
+    let exist = cart.some(elem => elem.id === product.id);
+    if(exist){
+        cart.forEach(elem => {
+            if(elem.id === product.id){
+                elem.amount += 1;
+            }
+        })
+    }else {
+        let cartItem = { ...product, amount: 1 };
+        cart = [...cart, cartItem];
+
+        +countItemsInCart.textContent++;
+        if (+countItemsInCart.textContent>0){
+            countItemsInCart.classList.add('notempty');
+        } else {
+            countItemsInCart.classList.remove('notempty');
+        }
+    }
+};
+
 function renderShowcase(){
-    
-    // product-detail
     let productDetails = document.querySelectorAll('.product-detail');
-    
-    goBack.addEventListener('click', function(){
-        single.classList.remove("show-single");
-    })
     
     productDetails.forEach(function(element) {
         element.addEventListener("click", function(e){
             let product = getProduct(e.target.closest('.product').dataset.id);
-            let contentAbout = document.querySelector('.description__content--about');
-            contentAbout.innerHTML = `
-            <h1>${product.name}</h1>
-                <h2>$${product.price}</h2>
-                <div>${product.description}</div>
-            `;
-            document.querySelector('.product__img').innerHTML = `<img src="${product.image}" alt="">`;
+            single.innerHTML = createDetail(product);
             single.classList.add("show-single");
+            let goBack = document.querySelector('.go-back');
+            goBack && goBack.addEventListener('click', () => single.classList.remove("show-single"));
+            document.querySelector('.detail .add-to-cart').addEventListener('click', (e) => {
+                addItem(getProduct(e.target.closest('.product').dataset.id));
+            });
         });
     });
+    
 }
 
 const carouselItem = (data) =>`
@@ -89,7 +113,7 @@ const carouselItem = (data) =>`
         <a class="category-item" href="shop.html">
             <img src="${data.image}" alt="${data.name}" height="100" width="250"><strong
             class="category-item-title">${data.name}</strong></a>
-    </div>`;
+</div>`;
 
 function makeCarousel(categories) {
     let result = '';
@@ -101,14 +125,7 @@ function makeCarousel(categories) {
 }
 // 
 
-// const getProduct = function(id){
-//     return products.find(function(product){
-//         return product.id === +(id);
-//     });
-// };
-
 const getProduct = (id) => products.find((product) => product.id === +(id));
-
 
 let cart = [];
 
@@ -144,16 +161,13 @@ function addToCartItem(item){
 function populateCart(cart) {
     cartItems.innerHTML = '';
     cart.forEach(function(item){addToCartItem(item);});
+    setCartTotal(cart);
 }
-
-// function clear() {
-//     cart = [];
-//     cartItems.innerHTML = '';
-// }
 
 const clear = () => {
     cart = [];
     cartItems.innerHTML = '';
+    setCartTotal(cart);
 }
 
 const filterItem = (cart, curentItem) => cart.filter(item => item.id !== +(curentItem.dataset.id));
@@ -167,21 +181,39 @@ function renderCart() {
         if (event.target.classList.contains("fa-trash-alt")){
             cart = filterItem(cart, event.target);
             event.target.closest('.cart-item').remove();
+            setCartTotal(cart);
+            
         } else if (event.target.classList.contains("fa-caret-right")) {
             let tempItem = findItem(cart, event.target);
             tempItem.amount = tempItem.amount + 1;
             event.target.previousElementSibling.innerText = tempItem.amount;
+            setCartTotal(cart);
         } else if (event.target.classList.contains("fa-caret-left")) {
             let tempItem = findItem(cart, event.target);
             if (tempItem !== undefined && tempItem.amount > 1) {
                 tempItem.amount = tempItem.amount - 1;
                 event.target.nextElementSibling.innerText = tempItem.amount;
+                
             } else {
                 cart = filterItem(cart, event.target);
                 event.target.closest('.cart-item').remove();
+                
             }
+            setCartTotal(cart);
         }
     });
+}
+
+
+function setCartTotal(cart) {
+    let tmpTotal = 0;
+    cart.map(item => {
+        tmpTotal = item.price * item.amount;
+        cartItems.querySelector(`#id${item.id} .product-subtotal`).textContent=parseFloat(tmpTotal.toFixed(2));
+    });
+
+    cartTotal.textContent = parseFloat(cart.reduce((previous, current) => previous + current.price * current.amount, 0).toFixed(2));
+    countItemsInCart.textContent = cart.reduce((previous, current) => previous + current.amount, 0);
 }
 
 document.addEventListener("DOMContentLoaded", function(){
@@ -197,19 +229,7 @@ document.addEventListener("DOMContentLoaded", function(){
     addToCarts.forEach(function(item) {
         item.addEventListener("click", function(event) {
             let product = getProduct(event.target.closest('.product').dataset.id);
-
-            let exist = cart.some(elem => elem.id === product.id);
-            if(exist){
-                cart.forEach(elem => {
-                    if(elem.id === product.id){
-                        elem.amount += 1;
-                    }
-                })
-            }else {
-                let cartItem = { ...product, amount: 1 };
-                cart = [...cart, cartItem];
-
-            }
+            addItem(product);
         });
     });
     renderCart();

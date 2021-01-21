@@ -1813,3 +1813,18 @@ nav {
     animation: fadeBuy 1s var(--bezier) forwards;
     animation-delay: 1s;
 }
+
+.notempty::before{
+    margin-right: 1px;
+      content: '(';
+    color: red;
+  }
+  .notempty::after{
+    margin-left: 1px;
+      content: ')';
+    color: red;
+  }
+  
+  .notempty{
+    color: red;
+  }
