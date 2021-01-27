@@ -84,11 +84,6 @@ const addItem = (product) => {
     
     }
     +countItemsInCart.textContent++;
-    // if (+countItemsInCart.textContent>0){
-    //     countItemsInCart.classList.add('notempty');
-    // } else {
-    //     countItemsInCart.classList.remove('notempty');
-    // }
     countItem(cart);
     saveCart(cart);
 };
@@ -122,9 +117,9 @@ function renderShowcase(){
 
 const carouselItem = (data) =>`
     <div class="carousel-item">
-        <a class="category-item" href="shop.html">
-            <img src="${data.image}" alt="${data.name}" height="100" width="250"><strong
-            class="category-item-title">${data.name}</strong></a>
+        <a class="category-item" href="#" data-category="${data.name}">
+            <img src="${data.image}" alt="${data.name}" height="100" width="250" class="category-item"  data-category="${data.name}"><strong
+            class="category-item category-item-title" data-category="${data.name}">${data.name}</strong></a>
 </div>`;
 
 function makeCarousel(categories) {
@@ -135,9 +130,6 @@ function makeCarousel(categories) {
     result += result;
     document.querySelector('.carousel-track').innerHTML = result;
 }
-// 
-
-// const getProduct = (id) => products.find((product) => product.id === +(id));
 
 let cart = [];
 
@@ -220,7 +212,6 @@ function renderCart() {
     });
 }
 
-
 function setCartTotal(cart) {
     let tmpTotal = 0;
     cart.map(item => {
@@ -231,8 +222,6 @@ function setCartTotal(cart) {
     cartTotal.textContent = parseFloat(cart.reduce((previous, current) => previous + current.price * current.amount, 0).toFixed(2));
     countItemsInCart.textContent = cart.reduce((previous, current) => previous + current.amount, 0);
 }
-
-// 
 
 function saveProducts(products) {
     localStorage.setItem("products", JSON.stringify(products));
@@ -247,8 +236,6 @@ function getProduct(id) {
     return products.find(product => product.id === +(id));
 }
 
-// const getProduct = (id) => products.find((product) => product.id === +(id));
-
 function getCart() {
     return localStorage.getItem("basket")
       ? JSON.parse(localStorage.getItem("basket"))
@@ -259,19 +246,25 @@ function saveCart(cart) {
     localStorage.setItem("basket", JSON.stringify(cart));
 }
 
-document.addEventListener("DOMContentLoaded", function(){
-    document.body.style.setProperty( "--categories-length", categories.length );
-    closeBtn.addEventListener("click", closeCart);
-    sidebarToggle.addEventListener("click", toggleCart);
-    saveProducts(products);
-    // console.log(localStorage.getItem("products"));
-    makeCarousel(categories);
-    makeShowcase(getProducts());
-    cart = getCart();
-    // countItemsInCart
-    countItem(cart);
-    renderShowcase();
+function renderCategory(selector){
+    // const categoryItems = document.querySelectorAll('.categories .carousel-item');
+    const categoryItems = document.querySelectorAll(selector);
+    // console.log(categoryItems);
+    categoryItems.forEach(item => item.addEventListener('click', function(e){
+        if (e.target.classList.contains('category-item')) {
+            const category = e.target.dataset.category;
+            // console.log(category);
+            const categoryFilter = items => items.filter(item => item.category.includes(category));
+                makeShowcase(categoryFilter(getProducts()));
+        } else {
+                makeShowcase(getProducts());
+        }
+        addToCarts();
+        renderShowcase();
+    }))
+}
 
+function addToCarts(){
     let addToCarts = document.querySelectorAll('.add-to-cart');
 
     addToCarts.forEach(function(item) {
@@ -280,5 +273,106 @@ document.addEventListener("DOMContentLoaded", function(){
             addItem(product);
         });
     });
+}
+
+function categoriesList(categories){
+    let result = '';
+    categories.forEach(item => 
+        result+=`<li class="mb-2"><a class="reset-anchor category-item" href="#" data-category="${item.name}">${item.name}</a></li>`
+    );
+    document.querySelector('.categories-list').innerHTML = result;
+} 
+ 
+function compareValues(key, order = 'asc') {
+    return (a, b) => {
+      if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+        return 0;
+      }
+  
+      const A = (typeof a[key] === 'string')
+        ? a[key].toUpperCase() : a[key];
+      const B = (typeof b[key] === 'string')
+        ? b[key].toUpperCase() : b[key];
+  
+      let comparison = 0;
+      if (A > B) {
+        comparison = 1;
+      } else if (A < B) {
+        comparison = -1;
+      }
+      return (
+        (order === 'desc') ? (comparison * -1) : comparison
+      );
+    };
+}
+document.addEventListener("DOMContentLoaded", function(){
+    
+    closeBtn.addEventListener("click", closeCart);
+    sidebarToggle.addEventListener("click", toggleCart);
+    saveProducts(products);
+    // console.log(localStorage.getItem("products"));
+    // преобразовать входные данные в массив
+
+    const mapped = getProducts().map(item => item.category);
+    console.log(mapped);
+    // const unique = [...new Set(mapped)];
+    // console.log(unique);
+    // We can even write this as a one-liner:
+    const categories = [...new Set(getProducts().map(item => (
+        { 
+            name: item.category,
+            image: item.image
+        }
+    )))];
+    console.log(categories);
+    document.body.style.setProperty( "--categories-length", categories.length );
+    makeCarousel(categories);
+
+    makeShowcase(getProducts());
+    cart = getCart();
+    // countItemsInCart
+    countItem(cart);
+    renderShowcase();
+
+    // let addToCarts = document.querySelectorAll('.add-to-cart');
+
+    // addToCarts.forEach(function(item) {
+    //     item.addEventListener("click", function(event) {
+    //         let product = getProduct(event.target.closest('.product').dataset.id);
+    //         addItem(product);
+    //     });
+    // });
+    addToCarts();
+
+    renderCategory('.categories .carousel-item');
+    document.querySelector('.categories-list') && categoriesList(categories);
+    document.querySelector('.categories-list') && renderCategory('.categories-list');
+
+    if (document.querySelector(".selectpicker")){
+        let selectpicker = document.querySelector(".selectpicker");
+        selectpicker.addEventListener('change', function() {
+            // обычная функция изменяет свой контекст в зависимости от вызова
+            console.log('You selected: ', this.value);
+            switch(this.value){
+                case 'low-high':
+                    makeShowcase(getProducts().sort(compareValues('price', 'asc')));
+                    break;
+                case 'high-low':
+                    makeShowcase(getProducts().sort(compareValues('price', 'desc')));
+                    break;
+                case 'popularity':
+                    makeShowcase(getProducts().sort(compareValues('id', 'desc')));
+                    break;
+                default:
+                    makeShowcase(getProducts().sort(compareValues('id', 'asc')));
+                    break;
+            }
+            addToCarts();
+            renderCategory();
+        });
+    }
+  
     renderCart();
 });
+
+    
