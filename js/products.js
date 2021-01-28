@@ -5,7 +5,7 @@ const products = [
         name:"Kui Ye Chen’s AirPods",
         price:123,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"electronics"
+        category: "electronics",
     },
     {
         id:2,
@@ -13,7 +13,7 @@ const products = [
         name:"Air bag",
         price:121,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"bags"
+        category:"bags",
     },
     {
         id:3,
@@ -21,7 +21,7 @@ const products = [
         name:"Men's T-Shirt",
         price:223,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"clothes"
+        category:"clothes",
     },
     {
         id:4,
@@ -29,7 +29,7 @@ const products = [
         name:"Kui Ye watch",
         price:321,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"watches"
+        category:"watches",
     },
     {
         id:5,
@@ -37,7 +37,7 @@ const products = [
         name:"Red digital smartwatch",
         price:111,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"electronics"
+        category:"electronics",
     },
     {
         id:6,
@@ -45,7 +45,7 @@ const products = [
         name:"Nike air max 95",
         price:222,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"shoes"
+        category:"shoes",
     },
     {
         id:7,
@@ -53,7 +53,7 @@ const products = [
         name:"Joemalone Women prefume",
         price:13,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"cosmetics"
+        category:"cosmetics",
     },
     {
         id:8,
@@ -61,40 +61,7 @@ const products = [
         name:"Apple Watch",
         price:333,
         description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequatur hic minus nihil obcaecati, ratione repellendus saepe sint tenetur totam ullam.",
-        category:"watches"
+        category:"watches",
     },
 ];
 
-// const categories = [
-//     {
-//         id:1,
-//         image:"images/product-1.jpg",
-//         name:"electronics",
-//     },
-//     {
-//         id:2,
-//         image:"images/product-2.jpg",
-//         name:"bags",
-//     },
-//     {
-//         id:3,
-//         image:"images/product-3.jpg",
-//         name:"clothes",
-
-//     },
-//     {
-//         id:4,
-//         image:"images/product-4.jpg",
-//         name:"watches",
-//     },
-//     {
-//         id:5,
-//         image:"images/product-6.jpg",
-//         name:"shoes",
-//     },
-//     {
-//         id:6,
-//         image:"images/product-7.jpg",
-//         name:"cosmetics",
-//     },
-// ];

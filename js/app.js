@@ -247,13 +247,10 @@ function saveCart(cart) {
 }
 
 function renderCategory(selector){
-    // const categoryItems = document.querySelectorAll('.categories .carousel-item');
     const categoryItems = document.querySelectorAll(selector);
-    // console.log(categoryItems);
     categoryItems.forEach(item => item.addEventListener('click', function(e){
         if (e.target.classList.contains('category-item')) {
             const category = e.target.dataset.category;
-            // console.log(category);
             const categoryFilter = items => items.filter(item => item.category.includes(category));
                 makeShowcase(categoryFilter(getProducts()));
         } else {
@@ -305,43 +302,67 @@ function compareValues(key, order = 'asc') {
       );
     };
 }
+
+function saveStorageItem(key, item) {
+    localStorage.setItem(key, JSON.stringify(item));
+}
+function fetchData(dataBase) {
+    const baseUrl = `https://my-json-server.typicode.com/couchjanus/db/${dataBase}`;
+
+    fetch(baseUrl)
+        .then((response) => {
+            if (response.status !== 200) {
+                console.log('Looks like there was a problem. Status Code: ' + response.status);
+                return;
+            }
+            response.json().then((dataJson) => {
+                saveStorageItem(dataBase, dataJson)
+            });
+        })
+        .catch((err) => {
+            console.log('Fetch Error :-S', err);
+        });
+
+}
 document.addEventListener("DOMContentLoaded", function(){
     
     closeBtn.addEventListener("click", closeCart);
     sidebarToggle.addEventListener("click", toggleCart);
-    saveProducts(products);
-    // console.log(localStorage.getItem("products"));
-    // преобразовать входные данные в массив
+    // saveProducts(products);
+    fetchData("products");
+    
+    // let array = getProducts();
+    // const key = 'category';
 
-    const mapped = getProducts().map(item => item.category);
-    console.log(mapped);
-    // const unique = [...new Set(mapped)];
-    // console.log(unique);
-    // We can even write this as a one-liner:
-    const categories = [...new Set(getProducts().map(item => (
+    // const arrayUniqueByKey = [...new Map(getProducts().map(item =>
+    // [item['category'], item])).values()];
+
+    // console.log(arrayUniqueByKey);
+    // const categories = arrayUniqueByKey.map(item => (
+    //     { 
+    //         name: item.category,
+    //         image: item.image
+    //     }
+    // ));
+    
+    const categories = [...new Map(getProducts().map(item =>
+        [item['category'], item])).values()].map(item => (
         { 
             name: item.category,
             image: item.image
         }
-    )))];
+    ));
     console.log(categories);
+    
     document.body.style.setProperty( "--categories-length", categories.length );
     makeCarousel(categories);
 
     makeShowcase(getProducts());
     cart = getCart();
-    // countItemsInCart
     countItem(cart);
     renderShowcase();
 
-    // let addToCarts = document.querySelectorAll('.add-to-cart');
-
-    // addToCarts.forEach(function(item) {
-    //     item.addEventListener("click", function(event) {
-    //         let product = getProduct(event.target.closest('.product').dataset.id);
-    //         addItem(product);
-    //     });
-    // });
+    
     addToCarts();
 
     renderCategory('.categories .carousel-item');
@@ -371,8 +392,6 @@ document.addEventListener("DOMContentLoaded", function(){
             renderCategory();
         });
     }
-  
     renderCart();
 });
-
-    
+   
